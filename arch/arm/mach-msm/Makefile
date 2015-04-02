@@ -434,3 +434,4 @@ obj-$(CONFIG_OEM_DEVICE_IFNO)	+=  device_info.o
 obj-$(CONFIG_OEM_PROJECT_INFO) += project_info.o
 #endif /* VENDOR_EDIT */
 obj-$(CONFIG_MSM_HOTPLUG) += msm_hotplug.o
+obj-$(CONFIG_INTELLI_HOTPLUG) += intelli_hotplug.o
