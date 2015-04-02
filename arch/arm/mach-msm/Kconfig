@@ -3083,7 +3083,16 @@ config PVS_LEVEL_INTERFACE
 	bool "Expose PVS level information in sys fs (Boeffla-Kernel)"
 	help
 	 Allow PVS level to be shown in Boeffla-Config app
-	 
+	
+
+config MSM_HOTPLUG
+	bool "MSM hotplug driver"
+	depends on HOTPLUG_CPU
+	default y
+	help
+	  The MSM hotplug driver controls on-/offlining of additional cores based
+	  on current cpu load.
+
 endif
 
 config KERNEL_TEXT_MPU_PROT
