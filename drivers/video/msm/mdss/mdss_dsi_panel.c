@@ -41,6 +41,10 @@
 #include <linux/switch.h>
 #endif
 
+#ifdef CONFIG_FB_MSM_MDSS
+#include <linux/lcd_notify.h>
+#endif
+
 #ifdef VENDOR_EDIT
 extern  int lm3630_bank_a_update_status(u32 bl_level);
 extern int push_component_info(enum COMPONENT_TYPE type, char *version, char * manufacture);
@@ -1044,6 +1048,10 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 		return -EINVAL;
 	}
 
+	// LCD notifier
+	lcd_notifier_call_chain(LCD_EVENT_ON_START, NULL);
+	pr_debug("LCD notify: LCD_EVENT_ON_START\n");
+
 	ctrl = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
 	mipi  = &pdata->panel_info.mipi;
@@ -1092,6 +1100,11 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 #endif
 #endif /*VENDOR_EDIT*/
 	pr_debug("%s:-\n", __func__);
+
+	// LCD notifier
+	lcd_notifier_call_chain(LCD_EVENT_ON_END, NULL);
+	pr_debug("LCD notify: LCD_EVENT_ON_END\n");
+
 	return 0;
 }
 
@@ -1104,6 +1117,11 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 		pr_err("%s: Invalid input data\n", __func__);
 		return -EINVAL;
 	}
+
+	// LCD notifier
+	lcd_notifier_call_chain(LCD_EVENT_OFF_START, NULL);
+	pr_debug("LCD notify: LCD_EVENT_OFF_START\n");
+
 #ifdef VENDOR_EDIT
 	mutex_lock(&cabc_mutex);
 	flag_lcd_off = true;
@@ -1134,6 +1152,11 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
         mdss_dsi_panel_cmds_send(ctrl, &ctrl->off_cmds);
 #endif
 	pr_debug("%s:-\n", __func__);
+
+	// LCD notifier
+	lcd_notifier_call_chain(LCD_EVENT_OFF_END, NULL);
+	pr_debug("LCD notify: LCD_EVENT_OFF_END\n");
+
 	return 0;
 }
 
