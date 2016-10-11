@@ -375,10 +375,6 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
-		   -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 \
-		   -fgraphite -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flatten \
-		   -ffast-math -fsingle-precision-constant \
-		   -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -funsafe-math-optimizations \
 		   -fno-diagnostics-show-caret
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
