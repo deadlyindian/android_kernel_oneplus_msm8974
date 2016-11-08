@@ -374,10 +374,11 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration -Wno-array-bounds \
+		   -Werror-implicit-function-declaration \
 		   -Wno-format-security -Wno-bool-compare \
-		   -Wno-sizeof-array-argument -Wno-logical-not-parentheses \
-		   -Wno-shift-overflow -Wno-tautological-compare \
+                   -Wno-sizeof-array-argument -Wno-logical-not-parentheses \
+                   -Wno-array-bounds -Wno-array-bounds -Wno-duplicate-decl-specifier -Wno-switch-unreachable \
+                   -Wno-shift-overflow -Wno-tautological-compare \
 		   -Wno-unused-const-variable -Wno-misleading-indentation \
 		   -fno-delete-null-pointer-checks \
 		   -fno-diagnostics-show-caret \
