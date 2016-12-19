@@ -779,7 +779,7 @@ static ssize_t show_related_cpus(struct cpufreq_policy *policy, char *buf)
 {
 	if (cpumask_empty(policy->related_cpus))
 		return show_cpus(policy->cpus, buf);
-	return showdrivers/cpufreq/cpufreq.c_cpus(policy->related_cpus, buf);
+	return show_cpus(policy->related_cpus, buf);
 }
 
 /**

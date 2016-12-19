@@ -519,7 +519,7 @@ static int cpufreq_parse_dt(struct device *dev)
 			GFP_KERNEL);
 
 	if (!dts_freq_table)
-		return ERR_PTR(-ENOMEM);
+		return -ENOMEM;
 
 	for (i = 0, j = 0; i < nf; i++, j += 3)
 		dts_freq_table[i].frequency = data[j];
