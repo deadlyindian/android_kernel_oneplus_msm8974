@@ -246,7 +246,7 @@ static struct notifier_block boost_migration_nb = {
 
 static void do_input_boost(struct work_struct *work)
 {
-	unsigned int i, ret, freq;
+	unsigned int i, ret;
 	struct cpu_sync *i_sync_info;
 	struct cpufreq_policy policy;
 
@@ -257,18 +257,11 @@ static void do_input_boost(struct work_struct *work)
 		ret = cpufreq_get_policy(&policy, i);
 		if (ret)
 			continue;
-
-		// ensure, touch boost freq does never exceed max scaling freq
-		if (input_boost_freq > policy.max)
-			freq = policy.max;
-		else
-			freq = input_boost_freq;
-
-		if (policy.cur >= freq)
+		if (policy.cur >= input_boost_freq)
 			continue;
 
 		cancel_delayed_work_sync(&i_sync_info->input_boost_rem);
-		i_sync_info->input_boost_min = freq;
+		i_sync_info->input_boost_min = input_boost_freq;
 		cpufreq_update_policy(i);
 		queue_delayed_work_on(i_sync_info->cpu, cpu_boost_wq,
 			&i_sync_info->input_boost_rem,
