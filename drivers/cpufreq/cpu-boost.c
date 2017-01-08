@@ -54,10 +54,7 @@ module_param(boost_ms, uint, 0644);
 
 static unsigned int sync_threshold;
 module_param(sync_threshold, uint, 0644);
-
-static unsigned int input_boost_freq;
-module_param(input_boost_freq, uint, 0644);
-
+	
 static bool input_boost_enabled;
 static bool suspended;
 
@@ -166,8 +163,6 @@ static int boost_adjust_notify(struct notifier_block *nb, unsigned long val,
 
 	if (!b_min && !ib_min)
 		return NOTIFY_OK;
-		if (!b_min && !ib_min)
-			break;
 
 		min = max(b_min, ib_min);
 		min = min(min, policy->max);
@@ -488,7 +483,7 @@ static struct notifier_block __refdata cpu_nblk = {
         .notifier_call = cpuboost_cpu_callback,
 };
 
-tatic void __wakeup_boost(void)
+static void __wakeup_boost(void)
 {
 	if (!wakeup_boost || !input_boost_enabled ||
 	     work_pending(&input_boost_work))
