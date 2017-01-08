@@ -47,9 +47,7 @@ static struct workqueue_struct *cpu_boost_wq;
 
 static struct work_struct input_boost_work;
 
-#ifdef CONFIG_STATE_NOTIFIER
 static struct notifier_block notif;
-#endif
 
 static unsigned int boost_ms;
 module_param(boost_ms, uint, 0644);
@@ -57,8 +55,7 @@ module_param(boost_ms, uint, 0644);
 static unsigned int sync_threshold;
 module_param(sync_threshold, uint, 0644);
 	
-static unsigned int input_boost_enabled = 1;
-module_param(input_boost_enabled, uint, 0644);
+static bool input_boost_enabled;
 static bool suspended;
 
 static unsigned int input_boost_ms = 40;
@@ -67,10 +64,8 @@ module_param(input_boost_ms, uint, 0644);
 static bool hotplug_boost = 1;
 module_param(hotplug_boost, bool, 0644);
 
-#ifdef CONFIG_STATE_NOTIFIER
 bool wakeup_boost;
 module_param(wakeup_boost, bool, 0644);
-#endif
 
 static struct delayed_work input_boost_rem;
 
@@ -84,6 +79,7 @@ static int set_input_boost_freq(const char *buf, const struct kernel_param *kp)
 	int i, ntokens = 0;
 	unsigned int val, cpu;
 	const char *cp = buf;
+	bool enabled = false;
 
 	while ((cp = strpbrk(cp + 1, " :")))
 		ntokens++;
@@ -94,7 +90,7 @@ static int set_input_boost_freq(const char *buf, const struct kernel_param *kp)
 			return -EINVAL;
 		for_each_possible_cpu(i)
 			per_cpu(sync_info, i).input_boost_freq = val;
-		goto out;
+		goto check_enable;
 	}
 
 	/* CPU:value pair */
@@ -113,7 +109,15 @@ static int set_input_boost_freq(const char *buf, const struct kernel_param *kp)
 		cp++;
 	}
 
-out:
+check_enable:
+	for_each_possible_cpu(i) {
+		if (per_cpu(sync_info, i).input_boost_freq) {
+			enabled = true;
+			break;
+		}
+	}
+	input_boost_enabled = enabled;
+
 	return 0;
 }
 
@@ -465,7 +469,7 @@ static int cpuboost_cpu_callback(struct notifier_block *cpu_nb,
 		if (suspended || !hotplug_boost || !input_boost_enabled ||
 		     work_pending(&input_boost_work))
 			break;
-		pr_debug("Hotplug boost for CPU%lu\n", (long)hcpu);
+		pr_debug("Hotplug boost for CPU%d\n", (int)hcpu);
 		queue_work(cpu_boost_wq, &input_boost_work);
 		last_input_time = ktime_to_us(ktime_get());
 		break;
@@ -479,7 +483,6 @@ static struct notifier_block __refdata cpu_nblk = {
         .notifier_call = cpuboost_cpu_callback,
 };
 
-#ifdef CONFIG_STATE_NOTIFIER
 static void __wakeup_boost(void)
 {
 	if (!wakeup_boost || !input_boost_enabled ||
@@ -490,6 +493,7 @@ static void __wakeup_boost(void)
 	last_input_time = ktime_to_us(ktime_get());
 }
 
+#ifdef CONFIG_STATE_NOTIFIER
 static int state_notifier_callback(struct notifier_block *this,
 				unsigned long event, void *data)
 {
