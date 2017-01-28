@@ -378,9 +378,9 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security -Wno-bool-compare \
                    -Wno-sizeof-array-argument -Wno-logical-not-parentheses \
                    -Wno-array-bounds -Wno-array-bounds -Wno-duplicate-decl-specifier -Wno-switch-unreachable \
-                   -Wno-shift-overflow -Wno-tautological-compare \
+                   -Wno-shift-overflow -Wno-tautological-compare -Wno-int-in-bool-context \
 		   -Wno-unused-const-variable -Wno-misleading-indentation \
-		   -fno-delete-null-pointer-checks \
+		   -fno-delete-null-pointer-checks -Wno-format-length -Wno-bool-operation \
 		   -fno-diagnostics-show-caret \
 		   $(KERNELFLAGS)
 KBUILD_AFLAGS_KERNEL := $(KERNELFLAGS)
